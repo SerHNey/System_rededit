@@ -30,12 +30,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
 
     time_t t = time(NULL);
     char* s = ctime(&t);
-    LPWSTR t_s = convertCharArrayToLPCWSTR(s);
 
-    StrParam = L"Изменённый параметр2";
-
-
-    if (RegSetValueExW(nametmp, L"time", NULL, REG_SZ, t_s, 100 * sizeof(WCHAR)) == ERROR_SUCCESS) { // Создание ключа в разделе
+    if (RegSetValueExW(nametmp, L"time", NULL, REG_SZ, convertCharArrayToLPCWSTR(s), 100 * sizeof(WCHAR)) == ERROR_SUCCESS) { // Создание ключа в разделе
         MessageBox(NULL, L"Параметр успешно создан и ему присвоенно значение", L"Оповещение", MB_OK);
     }
 
