@@ -1,5 +1,14 @@
-﻿#include <Windows.h>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <Windows.h>
 #include <stdio.h>
+#include <time.h>
+
+wchar_t* convertCharArrayToLPCWSTR(char* charArray)
+{
+    wchar_t* wString[512];
+    MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, 4096);
+    return wString;
+}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow) {
     HKEY hKey = NULL;
@@ -19,9 +28,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
         MessageBox(NULL, L"Значение присвоено", L"Оповещение", MB_OK);
     }
 
+    time_t t = time(NULL);
+    char* s = ctime(&t);
+    LPWSTR t_s = convertCharArrayToLPCWSTR(s);
+
     StrParam = L"Изменённый параметр2";
 
-    if (RegSetValueExW(nametmp, L"time", NULL, REG_SZ, StrParam, StrParamLen * sizeof(WCHAR)) == ERROR_SUCCESS) { // Создание ключа в разделе
+
+    if (RegSetValueExW(nametmp, L"time", NULL, REG_SZ, t_s, 100 * sizeof(WCHAR)) == ERROR_SUCCESS) { // Создание ключа в разделе
         MessageBox(NULL, L"Параметр успешно создан и ему присвоенно значение", L"Оповещение", MB_OK);
     }
 
