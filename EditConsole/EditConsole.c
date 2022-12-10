@@ -21,10 +21,6 @@ void ClearConsoleToColors(int ForgC, int BackC, int FontSizeC, int BoldFontC)
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     CONSOLE_FONT_INFOEX cfon;
 
-
-
-   
-
     //Here we will set the current color
     SetConsoleTextAttribute(hStdOut, wColor);
     if (GetConsoleScreenBufferInfo(hStdOut, &csbi))

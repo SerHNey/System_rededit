@@ -44,12 +44,3 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
     }
 }
 
-int main()
-{
-    changecolor();
-}
-
-int changecolor() {
-    printf("color 84");
-}
-
