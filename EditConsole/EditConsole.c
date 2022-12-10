@@ -3,7 +3,7 @@
 #include <Windows.h>
 
 
-void ClearConsoleToColors(int ForgC, int BackC)
+void ClearConsoleToColors(int ForgC, int BackC, int FontSizeC, int BoldFontC)
 {
     
     WORD wColor = ((BackC & 0x0F) << 4) + (ForgC & 0x0F);
@@ -19,6 +19,11 @@ void ClearConsoleToColors(int ForgC, int BackC)
     //This is a structure containing all of the console info
     // it is used here to find the size of the console.
     CONSOLE_SCREEN_BUFFER_INFO csbi;
+    CONSOLE_FONT_INFOEX cfon;
+
+
+
+   
 
     //Here we will set the current color
     SetConsoleTextAttribute(hStdOut, wColor);
@@ -30,10 +35,16 @@ void ClearConsoleToColors(int ForgC, int BackC)
 
         FillConsoleOutputAttribute(hStdOut, csbi.wAttributes
             , csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
-
-
+        cfon.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+        cfon.dwFontSize.Y = FontSizeC;
+        if (BoldFontC) {
+            cfon.FontWeight = 1000;
+        }
+        else
+            cfon.FontWeight = 100;
         //This will set our cursor position for the next print statement.
         SetConsoleCursorPosition(hStdOut, coord);
+        SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfon);
     }
     return;
 }
@@ -55,19 +66,7 @@ int main()
 	system("chcp 1251>null");
 	//SelectorColor(1);
 
-    ClearConsoleToColors(1, 5);
-
-    CONSOLE_FONT_INFOEX cfon;
-    ZeroMemory(&cfon, sizeof(CONSOLE_FONT_INFOEX));
-    cfon.cbSize = sizeof(CONSOLE_FONT_INFOEX);
-    cfon.nFont = 12;
-    cfon.dwFontSize.X = 7;
-    cfon.dwFontSize.Y = 24;
-    cfon.FontFamily = 54; // Lucida Console
-    cfon.FontWeight = 400;
-    lstrcpyW(cfon.FaceName, L"Lucida Console");
-    SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfon);
-
+    ClearConsoleToColors(1, 3, 24,0);
 
 	printf("dqd");
     return 0;
