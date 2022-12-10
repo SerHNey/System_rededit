@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "System_rededit", "System_rededit\System_rededit.vcxproj", "{FCD5692B-606B-44F6-9183-97C5CE4C3EFC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EditConsole", "EditConsole\EditConsole.vcxproj", "{527E2BFE-7B5C-4530-8C4A-5F3A115613B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{FCD5692B-606B-44F6-9183-97C5CE4C3EFC}.Release|x64.Build.0 = Release|x64
 		{FCD5692B-606B-44F6-9183-97C5CE4C3EFC}.Release|x86.ActiveCfg = Release|Win32
 		{FCD5692B-606B-44F6-9183-97C5CE4C3EFC}.Release|x86.Build.0 = Release|Win32
+		{527E2BFE-7B5C-4530-8C4A-5F3A115613B1}.Debug|x64.ActiveCfg = Debug|x64
+		{527E2BFE-7B5C-4530-8C4A-5F3A115613B1}.Debug|x64.Build.0 = Debug|x64
+		{527E2BFE-7B5C-4530-8C4A-5F3A115613B1}.Debug|x86.ActiveCfg = Debug|Win32
+		{527E2BFE-7B5C-4530-8C4A-5F3A115613B1}.Debug|x86.Build.0 = Debug|Win32
+		{527E2BFE-7B5C-4530-8C4A-5F3A115613B1}.Release|x64.ActiveCfg = Release|x64
+		{527E2BFE-7B5C-4530-8C4A-5F3A115613B1}.Release|x64.Build.0 = Release|x64
+		{527E2BFE-7B5C-4530-8C4A-5F3A115613B1}.Release|x86.ActiveCfg = Release|Win32
+		{527E2BFE-7B5C-4530-8C4A-5F3A115613B1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
