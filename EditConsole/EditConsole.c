@@ -1,72 +1,127 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <Windows.h>
+HANDLE hMyKey;
+
+CONSOLE_FONT_INFOEX cfi;
+
+DWORD BackGround = 0;
+DWORD ForeGround = 0;
+
+void GetSettings();
+void SetFontSize(DWORD st);
+void SetColor(DWORD Color, int Back);
+void SetFontType(DWORD);
 
 
-void ClearConsoleToColors(int ForgC, int BackC, int FontSizeC, int BoldFontC)
+void SetColor(DWORD Color, int Back)
 {
-    
-    WORD wColor = ((BackC & 0x0F) << 4) + (ForgC & 0x0F);
-    //Get the handle to the current output buffer...
+    WORD wColor;
+    if (Back == 0) {
+        wColor = wColor = ((BackGround & 0x0F) << 4) + (Color & 0x0F);
+        RegSetValueEx(hMyKey, L"Fcolor", 0, REG_DWORD, (const BYTE*)&Color, sizeof(Color));
+        ForeGround = Color;
+    }
+    else {
+        wColor = wColor = ((Color & 0x0F) << 4) + (ForeGround & 0x0F);
+        RegSetValueEx(hMyKey, L"Bcolor", 0, REG_DWORD, (const BYTE*)&Color, sizeof(Color));
+        BackGround = Color;
+    }
+
     HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    //This is used to reset the carat/cursor to the top left.
     COORD coord = { 0, 0 };
-    //A return value... indicating how many chars were written
-    //   not used but we need to capture this since it will be
-    //   written anyway (passing NULL causes an access violation).
     DWORD count;
-
-    //This is a structure containing all of the console info
-    // it is used here to find the size of the console.
     CONSOLE_SCREEN_BUFFER_INFO csbi;
-    CONSOLE_FONT_INFOEX cfon;
-
-    //Here we will set the current color
     SetConsoleTextAttribute(hStdOut, wColor);
     if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
     {
-        //This fills the buffer with a given character (e.g 32=space).
         FillConsoleOutputCharacter(hStdOut, (TCHAR)32
             , csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
 
         FillConsoleOutputAttribute(hStdOut, csbi.wAttributes
-            , csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
-        cfon.cbSize = sizeof(CONSOLE_FONT_INFOEX);
-        cfon.dwFontSize.Y = FontSizeC;
-        if (BoldFontC) {
-            cfon.FontWeight = 1000;
-        }
-        else
-            cfon.FontWeight = 100;
-        //This will set our cursor position for the next print statement.
+            , csbi.dwSize.X + 12 * csbi.dwSize.Y + 12, coord, &count);
         SetConsoleCursorPosition(hStdOut, coord);
-        SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfon);
     }
     return;
 }
 
-void SelectorColor(int ForgC) {
-	WORD wColor;
-	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-	if (GetConsoleScreenBufferInfo(hStdOut, &csbi)) {
-		wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
-		SetConsoleTextAttribute(hStdOut, wColor);
-	}
-	return;
+void GetSettings() {
+    DWORD dw;
+    DWORD size = sizeof(dw);
+    if (RegGetValueW(hMyKey, NULL, L"style", RRF_RT_DWORD, NULL, (LPBYTE)&dw, &size) == ERROR_SUCCESS)
+    {
+        cfi.FontWeight = dw;
+    }
+    dw = 0;
+    if (RegGetValueW(hMyKey, NULL, L"size", RRF_RT_DWORD, NULL, (LPBYTE)&dw, &size) == ERROR_SUCCESS)
+    {
+        cfi.dwFontSize.Y = dw;
+    }
+    dw = 0;
+    if (RegGetValueW(hMyKey, NULL, L"Fcolor", RRF_RT_DWORD, NULL, (LPBYTE)&dw, &size) == ERROR_SUCCESS)
+    {
+        SetColor(dw, 0);
+    }
+    dw = 0;
+    if (RegGetValueW(hMyKey, NULL, L"Bcolor", RRF_RT_DWORD, NULL, (LPBYTE)&dw, &size) == ERROR_SUCCESS)
+    {
+        SetColor(dw, 1);
+    }
 }
 
-int main()
-{
-	system("chcp 1251>null");
-	//SelectorColor(1);
+void SetFontSize(DWORD st) {
+    if (RegSetValueEx(hMyKey, L"size", 0, REG_DWORD, (const BYTE*)&st, sizeof(st)) == ERROR_SUCCESS) {
+        cfi.dwFontSize.Y = st;
+        SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+    };
+}
 
-    ClearConsoleToColors(1, 3, 24,0);
+void SetFontType(DWORD st) {
+    if (RegSetValueEx(hMyKey, L"style", 0, REG_DWORD, (const BYTE*)&st, sizeof(st)) == ERROR_SUCCESS) {
+        cfi.FontWeight = st;
+        SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+    };
+}
 
-	printf("dqd");
+int main() {
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    RegCreateKeyW(HKEY_CURRENT_USER, L"MyKey", &hMyKey);
+    cfi.cbSize = sizeof cfi;
+    GetSettings();
+    while (1)
+    {
+        system("cls");
+        char text;
+        printf("Цвет текста - 1\nЦвет фона - 2\nТип текста - 3\nРазмер текста - 4\nВыход - 0\n");
+        scanf("%c", &text);
+        DWORD i = 0;
+        switch (text)
+        {
+        case '1':
+            printf("Введите значение\n");
+            scanf("%d", &i);
+            SetColor(i, 0);
+            break;
+        case '2':
+            printf("Введите значение\n");
+            scanf("%d", &i);
+            SetColor(i, 1);
+            break;
+        case '3':
+            printf("Введите значение\n");
+            scanf("%d", &i);
+            SetFontType(i);
+            break;
+        case '4':
+            printf("Введите значение\n");
+            scanf("%d", &i);
+            SetFontSize(i);
+            break;
+        case '0':
+            return 0;
+            break;
+        }
+    }
     return 0;
-
 }
-
-
