@@ -1,4 +1,5 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <Windows.h>
 HANDLE hMyKey;
@@ -44,6 +45,51 @@ void SetColor(DWORD Color, int Back)
     }
     return;
 }
+
+int main()
+{
+
+	system("chcp 1251>null");
+    //ClearConsoleToColors(7, 0, 16, 0);
+   // ConsoleRead();
+    //SetBackground(1);
+
+    char choose;
+    
+    DWORD bold = 0;
+    DWORD ColorText = 7;
+    DWORD FontSize = 16;
+    DWORD BackGround = 0;
+    //ClearConsoleToColors(ColorText, BackGround, FontSize, bold);
+    while (1)
+    {
+        system("cls");
+        printf("Выберите нужную настройку командной строки\n 1 - настройка стиля шрифта\n 2 - настройка цвета шрифта\n 3 - настройка размера шрифта\n 4 - настройка цвета заднего фона\n");
+        gets(&choose);
+        if (choose == '1') {
+            printf("0 - default\n1 - Тонкий\n2 - bold\n");
+            scanf_s("%d", &bold);
+            ClearConsoleToColors(ColorText, BackGround, FontSize, bold);
+            printf("Пример текста....");
+        }
+        if (choose == '2') {
+            printf("Число от 0 до 199\n");
+            scanf_s("%d", &ColorText);
+            ClearConsoleToColors(ColorText, BackGround, FontSize, bold);
+            printf("Пример текста....");
+        }
+        if (choose == '3') {
+            printf("Число от 0 до 100\n");
+            scanf_s("%d", &FontSize);
+            ClearConsoleToColors(ColorText, BackGround, FontSize, bold);
+            printf("Пример текста....");
+        }
+        if (choose == '4') {
+            printf("Число от 0 до 100\n");
+            scanf_s("%d", &BackGround);
+            ClearConsoleToColors(ColorText, BackGround, FontSize, bold);
+            printf("Пример текста....");
+        }
 
 void GetSettings() {
     DWORD dw;
